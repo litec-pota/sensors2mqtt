@@ -269,7 +269,34 @@
 
                         // Set Default Values for all Fields
                         setDefaultValues();
+			
+			// Geolocation API Calls			
+			function getLocation() {
+			  console.info('Getting current location');
+  			  if (navigator.geolocation) {
+			    navigator.geolocation.getCurrentPosition(updatePosition);
+			  } else {
+				 $("#latestPosition").val("Geolocation is not supported by this browser.");
+			  }
+			}
 
+			function updatePosition(position) 
+			{
+				val content = "Latitude: " + position.coords.latitude +  "<br>Longitude: " + position.coords.longitude;
+				// Log to console
+                                console.log("Got position Update: " + content);
+
+                                // write into gui
+                                $("#latestPosition").val(new Date().toISOString() + " -> " + content);
+
+                                // And send via MQTT
+                                if(connected)
+                                {
+                                        message = new Paho.MQTT.Message(position);
+                                        message.destinationName = $("#topicInput").val();
+                                        client.send(message);
+                                }
+			}
                 });
 
         </script>
@@ -373,7 +400,7 @@
                                <div class="col-lg-5">
                                         <div class="form-group">
                                                 <label for="latestScan">Latest Position</label>
-                                                <textarea class="form-control" id="latestScan" rows="3" disabled></textarea>
+                                                <textarea class="form-control" id="latestPosition" rows="3" disabled></textarea>
                                         </div>
                                 </div>
                                 <div class="col-lg-5">
