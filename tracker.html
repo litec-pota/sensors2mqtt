@@ -282,7 +282,7 @@
 
 			function updatePosition(position) 
 			{
-				val content = "Latitude: " + position.coords.latitude +  "<br>Longitude: " + position.coords.longitude;
+				var content = "Latitude: " + position.coords.latitude +  "<br>Longitude: " + position.coords.longitude;
 				// Log to console
                                 console.log("Got position Update: " + content);
 
@@ -292,7 +292,7 @@
                                 // And send via MQTT
                                 if(connected)
                                 {
-                                        message = new Paho.MQTT.Message(position);
+                                        message = new Paho.MQTT.Message(JSON.stringify(position));
                                         message.destinationName = $("#topicInput").val();
                                         client.send(message);
                                 }
