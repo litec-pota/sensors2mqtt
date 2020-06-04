@@ -293,7 +293,7 @@
                                 // And send via MQTT
                                 if(connected)
                                 {
-                                        message = new Paho.MQTT.Message(JSON.stringify(position));
+                                        message = new Paho.MQTT.Message(JSON.stringify(position.coords));
                                         message.destinationName = $("#topicInput").val();
                                         client.send(message);
                                 }
