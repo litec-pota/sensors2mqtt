@@ -68,11 +68,22 @@
                                 return defaultvalue;
                         }
                         else
-{
+			{
                                 return decodeURI(results[1]) || 0;
                         }
                 }
-
+		
+		// Copies members of an object into a new object 
+		function flatten(obj) 
+		{
+			var ret = {};
+			for (var i in obj) 
+			{
+				ret[i] = obj[i];
+		    	}
+		    	return ret;
+		}
+		
                 //------------------------- MQTT LOGIC ----------------------
                 // called when the client disconnects
                 function onMqttConnectionEstablished() 
@@ -293,17 +304,7 @@
                                 // And send via MQTT
                                 if(connected)
                                 {
-					position.coords.prototype.toJSON = function() {
-						var tmp = {};
-						for(var key in this) {
-						    if(typeof this[key] !== 'function')
-							tmp[key] = this[key];
-						}
-						return tmp;
-					    }
-					};
-
-                                        message = new Paho.MQTT.Message(JSON.stringify(position.coords));
+                                        message = new Paho.MQTT.Message(JSON.stringify(flatten(position.coords)));
                                         message.destinationName = $("#topicInput").val();
                                         client.send(message);
                                 }
