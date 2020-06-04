@@ -224,7 +224,7 @@
                         if(theTopic == null)
                         {
                                 $.getJSON('//jsonip.com/?callback=?', function(data) {
-                                        $("#topicInput").val("qr2mqtt/" + data.ip);
+                                        $("#topicInput").val("loc2mqtt/" + data.ip);
                                 });
                         }
                         else
@@ -283,7 +283,7 @@
 			// Called whenever we get a location update
 			function updatePosition(position) 
 			{
-				var content = "Latitude: " + position.coords.latitude +  "<br>Longitude: " + position.coords.longitude;
+				var content = "Latitude: " + position.coords.latitude +  "\tLongitude: " + position.coords.longitude;
 				// Log to console
                                 console.log("Got position Update: " + content);
 
