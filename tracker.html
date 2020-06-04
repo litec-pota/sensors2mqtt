@@ -270,16 +270,17 @@
                         // Set Default Values for all Fields
                         setDefaultValues();
 			
-			// Geolocation API Calls			
-			function getLocation() {
-			  console.info('Getting current location');
-  			  if (navigator.geolocation) {
-			    navigator.geolocation.getCurrentPosition(updatePosition);
-			  } else {
-				 $("#latestPosition").val("Geolocation is not supported by this browser.");
-			  }
+			// Try to get the current location
+			if (navigator.geolocation) 
+			{
+				navigator.geolocation.watchPosition(updatePosition);
+			} 
+			else 
+			{
+				$("#latestPosition").val("Geolocation is not supported by this browser.");
 			}
 
+			// Called whenever we get a location update
 			function updatePosition(position) 
 			{
 				var content = "Latitude: " + position.coords.latitude +  "<br>Longitude: " + position.coords.longitude;
