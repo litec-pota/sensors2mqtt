@@ -1,6 +1,6 @@
-# geolocation
+# geolocation2mqtt
 
-This project implements a HTML5 geolocation-API based position tracker which sends the current position via MQTT to the specified topic. Therefore it enables you to use your smartphone, tablet or laptop with webcam to be used as cheap tracking device in the IoT environment.
+This project implements a HTML5 geolocation-API based position tracker which sends the current position as JSON via MQTT to the specified topic. Therefore it enables you to use your smartphone, tablet or laptop with webcam to be used as cheap tracking device in the IoT environment.
 
 ## Installing
 
