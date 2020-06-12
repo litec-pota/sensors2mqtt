@@ -6,7 +6,6 @@
 	<!-- SEO -->
 	<meta name="distribution" content="GLOBAL" />
 	<meta name="rating" content="General" />
-	<meta name="language" content="en" />
 	<meta name="author" content="Guenther Hutter">
 	<meta name="author" content="bytebang e.U."/>
 	<meta name="description" content="Transmit your position via MQTT">
@@ -252,7 +251,7 @@
                         $("#keepAliveInput").val(urlParamOrDefault("keepAlive","60"));
 
                         $("#timeoutInput").val(urlParamOrDefault("timeout","3"));
-                        $("#lastWillInput").val(urlParamOrDefault("lastWill","Scanner disconnected"));
+                        $("#lastWillInput").val(urlParamOrDefault("lastWill","Tracker disconnected"));
 
                         var tls = urlParamOrDefault("tls","true");
                         $("#tlsInput").prop('checked', (tls == "true" || tls == "1"));
