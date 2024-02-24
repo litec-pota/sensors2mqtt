@@ -6,7 +6,7 @@ This project implements a HTML5 geolocation-API based position tracker which sen
 
 You do not need to install anything. Just visit the following link and use it:
 
-[Try the latest live demo](https://tinyurl.com/geolocation2mqtt)
+[Try the latest live demo](https://raw.githack.com/litec-pota/sensors2mqtt/master/tracker.html)
 
 *Note:* The application behind this link points to the most recent version of the application.
 It will improove / change in the future - so dont expect a stable version here.
