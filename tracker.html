@@ -57,6 +57,7 @@
                 var client = null;
                 var connected = false;
                 var availablecameras = {};
+                var accel = {};
 
                 //------------------------- RANDOM HELPER SCRIPTS ----------------------
                 function urlParamOrDefault(name, defaultvalue)
@@ -242,10 +243,10 @@
                                 $("#topicInput").val(theTopic);
                         }
 
-                        $("#hostInput").val(urlParamOrDefault("host","iot.eclipse.org"));
-                        $("#portInput").val(urlParamOrDefault("port","443"));
+                        $("#hostInput").val(urlParamOrDefault("host","test.mosquitto.org"));
+                        $("#portInput").val(urlParamOrDefault("port","8081"));
                         $("#clientIdInput").val(urlParamOrDefault("clientId","bb-loc2mqtt-" + new Date().getTime()));
-                        $("#pathInput").val(urlParamOrDefault("path","/ws"));
+                        $("#pathInput").val(urlParamOrDefault("path",""));
                         $("#userInput").val(urlParamOrDefault("user",""));
                         $("#passInput").val(urlParamOrDefault("pass",""));
                         $("#keepAliveInput").val(urlParamOrDefault("keepAlive","60"));
@@ -253,7 +254,7 @@
                         $("#timeoutInput").val(urlParamOrDefault("timeout","3"));
                         $("#lastWillInput").val(urlParamOrDefault("lastWill","Tracker disconnected"));
 
-                        var tls = urlParamOrDefault("tls","true");
+                        var tls = urlParamOrDefault("tls","false");
                         $("#tlsInput").prop('checked', (tls == "true" || tls == "1"));
         
                         var cleansession = urlParamOrDefault("cleanSession","true");
@@ -280,15 +281,34 @@
                         // Set Default Values for all Fields
                         setDefaultValues();
 			
-			// Try to get the current location
-			if (navigator.geolocation) 
-			{
-				navigator.geolocation.watchPosition(updatePosition);
-			} 
-			else 
-			{
-				$("#latestPosition").val("Geolocation is not supported by this browser.");
-			}
+        
+                        window.addEventListener("devicemotion", updateAcceleration, true);
+
+                        
+                        //Called when acceleration changes
+                        function updateAcceleration(event)
+                        {
+                                accel.x = event.accelerationIncludingGravity.x;
+                                accel.y = event.accelerationIncludingGravity.y;
+                                accel.z = event.accelerationIncludingGravity.z;
+                                console.log("x:" + accel.x + " y:" + accel.y + " z:" + accel.z);
+                        }
+                        
+                        //send Data every second
+                        setInterval(sendAndShowData, 1000);
+
+                        function sendAndShowData()
+                        {
+                                // write into gui
+                                $("#latestPosition").val("x: " + accel.x + "\ny: " + accel.y + "\nz: " + accel.z);
+
+                                if(connected)
+                                {
+                                        message = new Paho.MQTT.Message(JSON.stringify(accel));
+                                        message.destinationName = $("#topicInput").val();
+                                        client.send(message);
+                                }
+                        }
 
 			// Called whenever we get a location update
 			function updatePosition(position) 
@@ -314,7 +334,7 @@
 
 </head><body>
 
-<h1>{b} Geolocation -> MQTT</h1>
+<h1>{b} Acceleration -> MQTT</h1>
 <div class="row">
         <div class="col-sm-12">
                 <form>
