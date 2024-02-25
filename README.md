@@ -1,6 +1,6 @@
 # Sensordata2mqtt
 
-This project implements a HTML5 sensordata application which sends the sensordata as acceleration, orientation and GPS as JSON via MQTT to the specified topic. Therefore it enables you to use your smartphone, tablet or laptop to be used as cheap and eays to use sensor device in the IoT environment.
+This project implements a HTML5 sensordata application which sends the sensordata as acceleration, orientation and GPS as JSON via MQTT to the specified topic. Therefore it enables you to use your smartphone, tablet or laptop to be used as cheap and easy to use sensor device in the IoT environment.
 
 ## Installing
 
