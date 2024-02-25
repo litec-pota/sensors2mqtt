@@ -87,6 +87,13 @@
 		    	return ret;
 		}
 		
+                function roundDigits(value, digits)
+                {
+                        var scale = Math.pow(10,digits);
+                        var roundedVal = Math.round(value*scale) / scale;
+                        return roundedVal;
+                }
+
                 //------------------------- MQTT LOGIC ----------------------
                 // called when the client disconnects
                 function onMqttConnectionEstablished() 
@@ -310,18 +317,18 @@
                         //Called when acceleration changes
                         function updateAcceleration(event)
                         {
-                                accel.x = event.accelerationIncludingGravity.x;
-                                accel.y = event.accelerationIncludingGravity.y;
-                                accel.z = event.accelerationIncludingGravity.z;
+                                accel.x = roundDigits(event.accelerationIncludingGravity.x,2);
+                                accel.y = roundDigits(event.accelerationIncludingGravity.y,2);
+                                accel.z = roundDigits(event.accelerationIncludingGravity.z,2);
                                 console.log("x:" + accel.x + " y:" + accel.y + " z:" + accel.z);
                         }
                         
 
                         function updateOrientation(event)
                         {
-                                orient.alpha = event.alpha;
-                                orient.beta = event.beta;
-                                orient.gamma = event.gamma;
+                                orient.alpha = roundDigits(event.alpha,2);
+                                orient.beta = roundDigits(event.beta,2);
+                                orient.gamma = roundDigits(event.gamma,2);
                                 console.log("alpha:" + orient.alpha + " beta:" + orient.beta + " gamma:" + orient.gamma);
                         }
 
