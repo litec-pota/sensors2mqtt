@@ -58,6 +58,7 @@
                 var connected = false;
                 var availablecameras = {};
                 var accel = {};
+                var sendTimer = null;
 
                 //------------------------- RANDOM HELPER SCRIPTS ----------------------
                 function urlParamOrDefault(name, defaultvalue)
@@ -309,7 +310,11 @@
                         {
                                 var sendInterval = $("#sendInterval").val();
                                 $("#sendIntervalValue").html(sendInterval);
-                                setInterval(sendAndShowData, sendInterval);
+                                if(sendTimer != null)
+                                {
+                                        clearInterval(sendTimer);
+                                }
+                                sendTimer = setInterval(sendAndShowData, sendInterval);
                         }
 
                         function sendAndShowData()
@@ -446,8 +451,8 @@
                                 <div class="col-lg-2">
                                         <div class="slidecontainer">
                                                 <label for="sendInterval">Send Interval</label>
-                                                <input type="range" min="100" max="5000" value="1000" class="slider" id="sendInterval">
-                                                <p>Value: <span id="sendIntervalValue"></span></p>
+                                                <input type="range" min="100" max="5000" value="1000" step="100" class="slider" id="sendInterval">
+                                                <p>Value: <span id="sendIntervalValue"></span> ms</p>
                                         </div>
                                 </div>
                                 <div class="col-lg-2">
