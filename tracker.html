@@ -59,7 +59,7 @@
                 var availablecameras = {};
                 var accel = {};
                 var orient = {};
-                var magnet = {};
+                var position = {};
                 var sendTimer = null;
 
                 //------------------------- RANDOM HELPER SCRIPTS ----------------------
@@ -296,6 +296,15 @@
                         window.addEventListener("devicemotion", updateAcceleration, true);
                         window.addEventListener("deviceorientation", updateOrientation, true);
 
+                        // Try to get the current location
+			if (navigator.geolocation) 
+			{
+				navigator.geolocation.watchPosition(updatePosition);
+			} 
+			else 
+			{
+				$("#latestLog").val("Geolocation is not supported by this browser.");
+			}
 
                         
                         //Called when acceleration changes
@@ -313,10 +322,18 @@
                                 orient.alpha = event.alpha;
                                 orient.beta = event.beta;
                                 orient.gamma = event.gamma;
-                                magnet = event.webkitCompassHeading;
                                 console.log("alpha:" + orient.alpha + " beta:" + orient.beta + " gamma:" + orient.gamma);
                         }
 
+                        // Called whenever we get a location update
+			function updatePosition(event) 
+			{
+                                position.latitude = event.coords.latitude;
+                                position.longitude = event.coords.longitude;
+                                console.log("Latitude:" + position.latitude + " Longitude:" + position.longitude);
+			}
+
+                        
                         function setSendInterval()
                         {
                                 var sendInterval = $("#sendInterval").val();
@@ -332,7 +349,6 @@
                         {
                                 var sendAccel = $("#sendAccelerationData").is(':checked');
                                 var sendOrient = $("#sendOrientationData").is(':checked');
-                                var sendMagneto = $("#sendMagnetometerData").is(':checked');
                                 var sendGps = $("#sendGpsData").is(':checked');
 
                                 var data = {};
@@ -346,10 +362,10 @@
                                 {
                                         data.orientation = orient;
                                 }
-                                
-                                if(sendMagneto)
+
+                                if(sendGps)
                                 {
-                                        data.magnetometer = magnet;
+                                        data.position = position;
                                 }
 
                                 var dataString = JSON.stringify(data);
@@ -364,25 +380,6 @@
                                         client.send(message);
                                 }
                         }
-
-			// Called whenever we get a location update
-			function updatePosition(position) 
-			{
-				var content = "Latitude: " + position.coords.latitude +  "\tLongitude: " + position.coords.longitude;
-				// Log to console
-                                console.log("Got position Update: " + content);
-
-                                // write into gui
-                                $("#latestSensorData").val(new Date().toISOString() + " -> " + content);
-
-                                // And send via MQTT
-                                if(connected)
-                                {
-                                        message = new Paho.MQTT.Message(JSON.stringify(flatten(position.coords)));
-                                        message.destinationName = $("#topicInput").val();
-                                        client.send(message);
-                                }
-			}
                 });
 
         </script>
@@ -502,12 +499,6 @@
                                         <div class="form-group">
                                                 <label for="sendOrientationData">Orientation Data</label>
                                                 <input type="checkbox" class="special-checkbox" id="sendOrientationData" value="">
-                                        </div>
-                                </div>
-                                <div class="col-lg-2">
-                                        <div class="form-group">
-                                                <label for="sendMagnetometerData">Magnetometer Data</label>
-                                                <input type="checkbox" class="special-checkbox" id="sendMagnetometerData" value="">
                                         </div>
                                 </div>
                                 <div class="col-lg-2">
