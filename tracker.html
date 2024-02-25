@@ -1,5 +1,5 @@
 <html encoding="utf-8" manifest="/doesnt-exist.appcache"><head>
-        <title>{b} :: Geolocation -> MQTT</title>
+        <title>{b} :: SensorData -> MQTT</title>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
@@ -286,8 +286,13 @@
                         // Set Default Values for all Fields
                         setDefaultValues();
 			
+                        // Send Interval Controll
+                        setSendInterval()
+                        $("#sendInterval").on("input",setSendInterval);
         
                         window.addEventListener("devicemotion", updateAcceleration, true);
+
+
 
                         
                         //Called when acceleration changes
@@ -299,8 +304,13 @@
                                 console.log("x:" + accel.x + " y:" + accel.y + " z:" + accel.z);
                         }
                         
-                        //send Data every second
-                        setInterval(sendAndShowData, 1000);
+
+                        function setSendInterval()
+                        {
+                                var sendInterval = $("#sendInterval").val();
+                                $("#sendIntervalValue").html(sendInterval);
+                                setInterval(sendAndShowData, sendInterval);
+                        }
 
                         function sendAndShowData()
                         {
@@ -433,6 +443,34 @@
                                 </div>
                         </div>
                         <div class="row"> <!-- 4th line -->
+                                <div class="col-lg-2">
+                                        <div class="slidecontainer">
+                                                <label for="sendInterval">Send Interval</label>
+                                                <input type="range" min="100" max="5000" value="1000" class="slider" id="sendInterval">
+                                                <p>Value: <span id="sendIntervalValue"></span></p>
+                                        </div>
+                                </div>
+                                <div class="col-lg-2">
+                                        <div class="form-group">
+                                                <label for="sendAccelerationData">Acceleration Data</label>
+                                                <input type="checkbox" class="special-checkbox" id="sendAccelerationData" value="">
+                                        </div>
+                                </div>
+                                <div class="col-lg-2">
+                                        <div class="form-group">
+                                                <label for="sendOrientationData">Orientation Data</label>
+                                                <input type="checkbox" class="special-checkbox" id="sendOrientationData" value="">
+                                        </div>
+                                </div>
+                                <div class="col-lg-2">
+                                        <div class="form-group">
+                                                <label for="sendMagnetometerData">Magnetometer Data</label>
+                                                <input type="checkbox" class="special-checkbox" id="sendMagnetometerData" value="">
+                                        </div>
+                                </div>
+
+                         </div>
+                        <div class="row"> <!-- 5th line -->
                                <div class="col-lg-5">
                                         <div class="form-group">
                                                 <label for="latestScan">Latest SensorData</label>
