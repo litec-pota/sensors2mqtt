@@ -276,6 +276,62 @@
                         $("#cleanSessionInput").prop('checked', (cleansession == "true" || cleansession == "1"));
                 }
 
+
+                function requestAccelPermission() 
+                {
+                        // Prüfen, ob wir auf einem iOS-Gerät sind, das eine Erlaubnis benötigt
+                        if (typeof DeviceMotionEvent.requestPermission === 'function')
+                        {
+                                DeviceMotionEvent.requestPermission()
+                                .then(permissionState => {
+                                        if (permissionState === 'granted') 
+                                        {
+                                                // Erlaubnis erteilt: Listener hinzufügen
+                                                window.addEventListener('devicemotion', updateAcceleration, true);
+                                                window.addEventListener("deviceorientation", updateOrientation, true);
+                                        } else 
+                                        {
+                                                alert("Zugriff auf Sensoren wurde verweigert.");
+                                        }
+                                })
+                                .catch(console.error);
+                        } 
+                        else 
+                        {
+                                // Für Android oder ältere iOS-Versionen (keine explizite Permission nötig)
+                                window.addEventListener('devicemotion', updateAcceleration, true);
+                                window.addEventListener("deviceorientation", updateOrientation, true);
+                        }
+                }
+
+                //Called when acceleration changes
+                function updateAcceleration(event)
+                {
+                        accel.x = roundDigits(event.accelerationIncludingGravity.x,2);
+                        accel.y = roundDigits(event.accelerationIncludingGravity.y,2);
+                        accel.z = roundDigits(event.accelerationIncludingGravity.z,2);
+                        console.log("x:" + accel.x + " y:" + accel.y + " z:" + accel.z);
+                }
+                
+
+                function updateOrientation(event)
+                {
+                        orient.alpha = roundDigits(event.alpha,2);
+                        orient.beta = roundDigits(event.beta,2);
+                        orient.gamma = roundDigits(event.gamma,2);
+                        console.log("alpha:" + orient.alpha + " beta:" + orient.beta + " gamma:" + orient.gamma);
+                }
+
+                // Called whenever we get a location update
+                function updatePosition(event) 
+                {
+                        position.latitude = event.coords.latitude;
+                        position.longitude = event.coords.longitude;
+                        console.log("Latitude:" + position.latitude + " Longitude:" + position.longitude);
+                }
+
+
+
                 // on Load Eventhandler
                 $(window).on('load',function(){
 
@@ -286,6 +342,8 @@
                                 if(connected == false)
                                 {
                                         connectToMqttBroker();
+                                        requestAccelPermission();
+
                                 }
                                 else
                                 {
@@ -300,8 +358,8 @@
                         setSendInterval()
                         $("#sendInterval").on("input",setSendInterval);
         
-                        window.addEventListener("devicemotion", updateAcceleration, true);
-                        window.addEventListener("deviceorientation", updateOrientation, true);
+                        //window.addEventListener("devicemotion", updateAcceleration, true);
+                        //window.addEventListener("deviceorientation", updateOrientation, true);
 
                         // Try to get the current location
 			if (navigator.geolocation) 
@@ -311,33 +369,6 @@
 			else 
 			{
 				$("#latestLog").val("Geolocation is not supported by this browser.");
-			}
-
-                        
-                        //Called when acceleration changes
-                        function updateAcceleration(event)
-                        {
-                                accel.x = roundDigits(event.accelerationIncludingGravity.x,2);
-                                accel.y = roundDigits(event.accelerationIncludingGravity.y,2);
-                                accel.z = roundDigits(event.accelerationIncludingGravity.z,2);
-                                console.log("x:" + accel.x + " y:" + accel.y + " z:" + accel.z);
-                        }
-                        
-
-                        function updateOrientation(event)
-                        {
-                                orient.alpha = roundDigits(event.alpha,2);
-                                orient.beta = roundDigits(event.beta,2);
-                                orient.gamma = roundDigits(event.gamma,2);
-                                console.log("alpha:" + orient.alpha + " beta:" + orient.beta + " gamma:" + orient.gamma);
-                        }
-
-                        // Called whenever we get a location update
-			function updatePosition(event) 
-			{
-                                position.latitude = event.coords.latitude;
-                                position.longitude = event.coords.longitude;
-                                console.log("Latitude:" + position.latitude + " Longitude:" + position.longitude);
 			}
 
                         
